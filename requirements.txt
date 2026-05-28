@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pandas
+numpy
+scikit-learn
+xgboost
+sqlalchemy
+streamlit
+matplotlib
+plotly
+joblib
+python-multipart
+psycopg2-binary
+python-dotenv

@@ -1,0 +1,17 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+DATABASE_URL = (
+    "postgresql://farmadmin:StrongPassword123@192.168.29.9:5432/farm_inventory"
+)
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
