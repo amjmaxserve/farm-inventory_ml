@@ -14,13 +14,6 @@ from app.database.models import PredictionHistory
 
 router = APIRouter()
 
-# ==========================================
-# LOAD TRAINED MODEL
-# ==========================================
-
-model = joblib.load(
-    "trained_models/current_model.pkl"
-)
 
 
 # ==========================================
@@ -76,6 +69,7 @@ def predict_inventory(
     # MODEL PREDICTION
     # ======================================
 
+    model = joblib.load( "trained_models/current_model.pkl" )
     prediction = model.predict(input_df)
 
     predicted_value = round(

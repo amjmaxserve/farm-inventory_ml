@@ -18,6 +18,34 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
     restart: unless-stopped
+  
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
+    container_name: farm_fastapi
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - postgres
+
+    restart: unless-stopped
+  
+  streamlit:
+    build: 
+      context: .
+      dockerfile: Dockerfile.streamlit
+    container_name: farm_streamlit
+
+    ports:
+      - "8501:8501"
+
+    depends_on:
+      - fastapi
+
+    restart: unless-stopped
 
 volumes:
   postgres_data:

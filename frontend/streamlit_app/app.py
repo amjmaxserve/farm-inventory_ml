@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 import plotly.express as px
 
-API_URL = "http://192.168.29.9:8000"
+API_URL = "http://fastapi:8000"
 
 st.set_page_config(
     page_title="Farm Inventory Dashboard",
