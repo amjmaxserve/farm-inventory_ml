@@ -443,3 +443,316 @@ Intermediate Enterprise Agriculture MLOps Platform
 ```
 
 This project is actively evolving toward a full production-grade MLOps ecosystem.
+
+
+---
+
+# 🚀 Phase 2 — Full Dockerized Deployment
+
+The Farm Inventory Management Platform is now fully containerized using Docker and Docker Compose.
+
+## 🐳 Dockerized Services
+
+The application stack currently contains:
+
+| Service    | Purpose                          |
+| ---------- | -------------------------------- |
+| FastAPI    | Backend APIs and ML inference    |
+| Streamlit  | Dashboard and analytics frontend |
+| PostgreSQL | Persistent database              |
+| NGINX      | Reverse proxy and gateway        |
+
+---
+
+# 📦 Docker Architecture
+
+```text
+                    farm-ml.local
+                           │
+                    ┌────────────┐
+                    │   NGINX    │
+                    └─────┬──────┘
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                                   ▼
+ ┌────────────┐                     ┌────────────┐
+ │ Streamlit  │                     │  FastAPI   │
+ └────────────┘                     └─────┬──────┘
+                                          ▼
+                                 ┌────────────────┐
+                                 │ PostgreSQL DB  │
+                                 └────────────────┘
+```
+
+---
+
+# 🐳 Docker Compose Stack
+
+The stack is orchestrated using:
+
+```bash
+docker compose up -d --build
+```
+
+All services communicate internally through Docker networking.
+
+---
+
+# 📂 Container Names
+
+| Container  | Name           |
+| ---------- | -------------- |
+| FastAPI    | farm_fastapi   |
+| Streamlit  | farm_streamlit |
+| PostgreSQL | farm_postgres  |
+| NGINX      | farm_nginx     |
+
+---
+
+# 💾 PostgreSQL Persistence
+
+Persistent storage is enabled using Docker volumes.
+
+```yaml
+volumes:
+  postgres_data:
+```
+
+This ensures database data survives container restarts.
+
+---
+
+# 🛠 Database Initialization
+
+After starting containers, initialize database tables inside the FastAPI container:
+
+```bash
+docker exec -it farm_fastapi python -m app.database.init_db
+```
+
+Expected output:
+
+```text
+Creating database tables...
+Tables created successfully
+```
+
+---
+
+# 🗄 PostgreSQL Tables
+
+Current tables:
+
+| Table              | Purpose                        |
+| ------------------ | ------------------------------ |
+| inventory          | Inventory items                |
+| prediction_history | ML prediction logs             |
+| inventory_usage    | Inventory consumption tracking |
+
+Verify tables:
+
+```bash
+docker exec -it farm_postgres psql -U farmadmin -d farm_inventory
+```
+
+Inside PostgreSQL:
+
+```sql
+\dt
+```
+
+---
+
+# 🌱 Sample Data Generation
+
+Rich analytics demo data can be generated directly inside the FastAPI container.
+
+## Generate Sample Data
+
+```bash
+docker exec -it farm_fastapi python -m scripts.generate_sample_data
+```
+
+Expected output:
+
+```text
+Inventory data generated
+Prediction history generated
+Inventory usage generated
+Rich sample data generated successfully
+```
+
+---
+
+# 📊 Dashboard Features
+
+The Streamlit dashboard now includes:
+
+* Inventory overview
+* Prediction analytics
+* Low stock alerts
+* Crop-wise inventory charts
+* Supplier distribution analytics
+* Prediction history tracking
+* Inventory valuation metrics
+
+---
+
+# 🔁 Disaster Recovery Validation
+
+The platform was tested for full recovery using:
+
+```bash
+docker compose down -v
+```
+
+This removes:
+
+* containers
+* networks
+* volumes
+* PostgreSQL data
+
+The entire platform was successfully recreated using:
+
+* container rebuilds
+* database bootstrap
+* sample data regeneration
+
+---
+
+# 🌐 Phase 3 — NGINX Reverse Proxy Integration
+
+NGINX is now used as a reverse proxy and ingress gateway.
+
+---
+
+# 🔀 Reverse Proxy Routing
+
+| Route | Destination         |
+| ----- | ------------------- |
+| /     | Streamlit Dashboard |
+| /api  | FastAPI APIs        |
+| /docs | FastAPI Swagger UI  |
+
+---
+
+# 📁 NGINX Configuration
+
+NGINX configuration is mounted using:
+
+```yaml
+volumes:
+  - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+```
+
+---
+
+# 🌍 Local Domain Configuration
+
+The platform is accessible using a custom local domain:
+
+```text
+farm-ml.local
+```
+
+---
+
+# 🖥 Windows Host Machine Setup
+
+The Windows machine must be on the same network as the VM.
+
+---
+
+# ✏️ Edit Windows Hosts File
+
+Open as Administrator:
+
+```text
+C:\Windows\System32\drivers\etc\hosts
+```
+
+Add:
+
+```text
+<VM_IP_ADDRESS>    farm-ml.local
+```
+
+Example:
+
+```text
+192.168.29.9    farm-ml.local
+```
+
+---
+
+# 🔄 Flush DNS Cache
+
+Run CMD as Administrator:
+
+```cmd
+ipconfig /flushdns
+```
+
+---
+
+# 📡 Access URLs
+
+## Dashboard
+
+```text
+http://farm-ml.local
+```
+
+## Swagger UI
+
+```text
+http://farm-ml.local/docs
+```
+
+## API Root
+
+```text
+http://farm-ml.local/api
+```
+
+---
+
+# 🧠 Infrastructure Concepts Implemented
+
+This project now demonstrates:
+
+* Containerized microservice architecture
+* Internal Docker networking
+* Reverse proxy routing
+* Persistent PostgreSQL storage
+* Production-style ingress gateway
+* Dynamic service communication
+* ML model retraining
+* Disaster recovery validation
+* Operational analytics dashboard
+* Local DNS-style domain routing
+
+---
+
+# 📌 Current Project Status
+
+Current platform maturity:
+
+```text
+Containerized Farm Inventory MLOps Platform
+```
+
+Implemented capabilities:
+
+* FastAPI backend
+* Streamlit analytics dashboard
+* PostgreSQL persistence
+* Dockerized infrastructure
+* NGINX reverse proxy
+* Local domain routing
+* ML prediction engine
+* Dynamic retraining pipeline
+* Analytics dashboards
+* Recovery validation
+* Production-style networking
