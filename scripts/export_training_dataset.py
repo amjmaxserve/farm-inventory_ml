@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 from app.database.db import SessionLocal
 from app.database.models import PredictionHistory
 
@@ -29,7 +29,10 @@ df = pd.DataFrame(rows)
 
 output_path = "datasets/retraining_dataset.csv"
 
-
+os.makedirs(
+    "datasets",
+    exist_ok=True
+)
 df.to_csv(output_path, index=False)
 
 print(f"Dataset exported successfully -> {output_path}")
