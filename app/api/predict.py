@@ -11,6 +11,16 @@ from app.database.dependencies import get_db
 
 from app.database.models import PredictionHistory
 
+from app.ml.model_loader import download_latest_model
+
+
+# ==========================================
+# LOAD MODEL FROM MINIO
+# ==========================================
+
+MODEL_PATH = download_latest_model()
+
+model = joblib.load(MODEL_PATH)
 
 router = APIRouter()
 
@@ -69,7 +79,7 @@ def predict_inventory(
     # MODEL PREDICTION
     # ======================================
 
-    model = joblib.load( "trained_models/current_model.pkl" )
+   
     prediction = model.predict(input_df)
 
     predicted_value = round(

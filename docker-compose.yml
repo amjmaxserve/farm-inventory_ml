@@ -51,6 +51,19 @@ services:
 
     restart: unless-stopped
 
+  bootstrap:
+    build:
+      context: .
+      dockerfile: Dockerfile.bootstrap
+    container_name: farm_bootstrap
+
+    depends_on:
+      - postgres
+      - minio
+
+    restart: "no"
+
+
   fastapi:
     build:
       context: .
@@ -60,6 +73,7 @@ services:
     
     depends_on:
       - postgres
+      - bootstrap
 
     restart: unless-stopped
   
