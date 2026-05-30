@@ -14,3 +14,6 @@ requests
 python-dotenv
 boto3
 mlflow
+pytest
+pytest-cov
+httpx

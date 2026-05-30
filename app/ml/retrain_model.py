@@ -65,6 +65,11 @@ from sklearn.metrics import (
 
 from xgboost import XGBRegressor
 from app.config import *
+from app.core.logger import get_logger
+
+logger = get_logger("Retraining")
+
+logger.info("Starting model retraining process...")
 
 # ======================================
 # SECTION 2

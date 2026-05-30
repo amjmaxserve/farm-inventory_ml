@@ -1,7 +1,9 @@
 import os
 import boto3
 from app.config import *
+from app.core.logger import get_logger
 
+logger = get_logger("fastapi")
 MODEL_PATH = "trained_models/current_model.pkl"
 
 BUCKET_NAME = MODEL_BUCKET
@@ -28,9 +30,7 @@ def download_latest_model():
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )
 
-    print(
-        "\nDownloading latest model from MinIO..."
-    )
+    logger.info("Downloading the latest model from MinIO...")
 
     s3_client.download_file(
         BUCKET_NAME,
@@ -38,8 +38,6 @@ def download_latest_model():
         MODEL_PATH
     )
 
-    print(
-        "Latest model downloaded successfully"
-    )
+    logger.info("Latest model downloaded successfully")
 
     return MODEL_PATH

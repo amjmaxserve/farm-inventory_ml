@@ -3,9 +3,25 @@ from app.api.health import router as health_router
 from app.api.predict import router as predict_router
 from app.api.inventory import router as inventory_router
 from app.api.prediction_history import router as prediction_history_router
+from app.core.logger import get_logger
+import time
 
 
+logger = get_logger("fastapi")
 app = FastAPI()
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    duration = round(time.time() - start_time, 3)
+    logger.info(
+        f"{request.method} "
+        f"{request.url.path} "
+        f"{response.status_code} "
+        f"{duration}s"
+    )
+    return response
 
 
 app.include_router(

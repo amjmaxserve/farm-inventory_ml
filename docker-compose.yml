@@ -65,6 +65,9 @@ services:
     ports:
       - "5000:5000"
 
+    volumes:
+      - ./logs:/app/logs
+
     environment:
       AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
       AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
@@ -90,6 +93,9 @@ services:
       dockerfile: Dockerfile.bootstrap
     container_name: farm_bootstrap
 
+    volumes:
+      - ./logs:/app/logs
+
     environment:
       AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
       AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
@@ -111,7 +117,8 @@ services:
       context: .
       dockerfile: Dockerfile.fastapi
     container_name: farm_fastapi
-
+    volumes:
+      - ./logs:/app/logs
     
     depends_on:
       bootstrap:
@@ -125,6 +132,8 @@ services:
       dockerfile: Dockerfile.streamlit
     container_name: farm_streamlit
 
+    volumes:
+      - ./logs:/app/logs
   
 
     depends_on:

@@ -8,9 +8,13 @@ from app.database.db import SessionLocal
 
 from app.config import *
 
+from app.core.logger import get_logger
+
+logger = get_logger("Bootstrap")
+
 def wait_for_postgres():
 
-    print("Waiting for PostgreSQL...")
+    logger.info("Waiting for PostgreSQL...")
 
     while True:
 
@@ -22,7 +26,7 @@ def wait_for_postgres():
 
             db.close()
 
-            print("PostgreSQL Ready")
+            logger.info("PostgreSQL Ready")
 
             return
 
