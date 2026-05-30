@@ -6,7 +6,9 @@ MODEL_PATH = "trained_models/current_model.pkl"
 
 BUCKET_NAME = MODEL_BUCKET
 
-MINIO_ENDPOINT = MLFLOW_TRACKING_URI
+MINIO_URL = (
+    f"http://{MINIO_ENDPOINT}"
+)
 
 AWS_ACCESS_KEY_ID = MINIO_ROOT_USER
 AWS_SECRET_ACCESS_KEY = MINIO_ROOT_PASSWORD
@@ -21,7 +23,7 @@ def download_latest_model():
 
     s3_client = boto3.client(
         "s3",
-        endpoint_url=MINIO_ENDPOINT,
+        endpoint_url=MINIO_URL,
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
     )

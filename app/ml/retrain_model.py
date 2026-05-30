@@ -89,7 +89,6 @@ CURRENT_MODEL_PATH = (
 # ======================================
 os.environ["AWS_ACCESS_KEY_ID"] = MINIO_ROOT_USER
 os.environ["AWS_SECRET_ACCESS_KEY"] = MINIO_ROOT_PASSWORD
-os.environ["MLFLOW_S3_ENDPOINT_URL"] = MINIO_ENDPOINT
 
 
 mlflow.set_tracking_uri(
@@ -109,7 +108,7 @@ mlflow.set_experiment(
 
 s3_client = boto3.client(
     "s3",
-    endpoint_url=MINIO_ENDPOINT,
+    endpoint_url=f"http://{MINIO_ENDPOINT}",
     aws_access_key_id=MINIO_ROOT_USER,
     aws_secret_access_key=MINIO_ROOT_PASSWORD
 )
