@@ -6,10 +6,23 @@ from app.api.prediction_history import router as prediction_history_router
 
 app = FastAPI()
 
-app.include_router(predict_router)
-app.include_router(prediction_history_router)
-app.include_router(inventory_router)
+app.include_router(
+    predict_router,
+    prefix="/api",
+    tags=["Prediction"]
+)
 
+app.include_router(
+    prediction_history_router,
+    prefix="/api",
+    tags=["Prediction History"]
+)
+
+app.include_router(
+    inventory_router,
+    prefix="/api",
+    tags=["Inventory"]
+)
 
 @app.get("/")
 def home():
