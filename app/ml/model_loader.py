@@ -1,14 +1,15 @@
 import os
 import boto3
+from app.config import *
 
 MODEL_PATH = "trained_models/current_model.pkl"
 
-BUCKET_NAME = "farm-inventory-model-registry"
+BUCKET_NAME = MODEL_BUCKET
 
-MINIO_ENDPOINT = "http://minio:9000"
+MINIO_ENDPOINT = MLFLOW_TRACKING_URI
 
-AWS_ACCESS_KEY_ID = "minioadmin"
-AWS_SECRET_ACCESS_KEY = "minioadmin"
+AWS_ACCESS_KEY_ID = MINIO_ROOT_USER
+AWS_SECRET_ACCESS_KEY = MINIO_ROOT_PASSWORD
 
 
 def download_latest_model():

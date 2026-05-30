@@ -48,6 +48,7 @@ def save_model(obj, path):
 import pandas as pd
 import mlflow
 
+
 from botocore.exceptions import ClientError
 
 from sklearn.compose import ColumnTransformer
@@ -63,17 +64,18 @@ from sklearn.metrics import (
 )
 
 from xgboost import XGBRegressor
+from app.config import *
 
 # ======================================
 # SECTION 2
 # CONFIGURATION
 # ======================================
 
-MLFLOW_URI = "http://mlflow:5000"
+MLFLOW_URI = MLFLOW_TRACKING_URI
 
-MINIO_ENDPOINT = "http://minio:9000"
+MINIO_ENDPOINT = MINIO_ENDPOINT
 
-BUCKET_NAME = "farm-inventory-model-registry"
+BUCKET_NAME = MODEL_BUCKET
 
 DATASET_PATH = "datasets/retraining_dataset.csv"
 
@@ -85,8 +87,8 @@ CURRENT_MODEL_PATH = (
 # SECTION 3
 # MLFLOW SETUP
 # ======================================
-os.environ["AWS_ACCESS_KEY_ID"] = "minioadmin"
-os.environ["AWS_SECRET_ACCESS_KEY"] = "minioadmin"
+os.environ["AWS_ACCESS_KEY_ID"] = MINIO_ROOT_USER
+os.environ["AWS_SECRET_ACCESS_KEY"] = MINIO_ROOT_PASSWORD
 os.environ["MLFLOW_S3_ENDPOINT_URL"] = MINIO_ENDPOINT
 
 
@@ -108,8 +110,8 @@ mlflow.set_experiment(
 s3_client = boto3.client(
     "s3",
     endpoint_url=MINIO_ENDPOINT,
-    aws_access_key_id="minioadmin",
-    aws_secret_access_key="minioadmin"
+    aws_access_key_id=MINIO_ROOT_USER,
+    aws_secret_access_key=MINIO_ROOT_PASSWORD
 )
 
 # ======================================
@@ -166,29 +168,6 @@ def load_dataset():
     
     return df
     
-# def upload_model_to_minio(model_path, model_name):
-#     try:
-#         s3_client.upload_file(
-#             Filename=model_path,
-#             Bucket=BUCKET_NAME,
-#             Key=model_name
-#         )
-#         print(f"Model '{model_name}' uploaded to MinIO bucket '{BUCKET_NAME}'.")
-#     except ClientError as e:
-#         print(f"Error uploading model to MinIO: {e}")
-#         raise e
-
-# def upload_dataset_to_minio(dataset_path, dataset_name):
-#     try:
-#         s3_client.upload_file(
-#             Filename=dataset_path,
-#             Bucket=BUCKET_NAME,
-#             Key=dataset_name
-#         )
-#         print(f"Dataset '{dataset_name}' uploaded to MinIO bucket '{BUCKET_NAME}'.")
-#     except ClientError as e:
-#         print(f"Error uploading dataset to MinIO: {e}")
-#         raise e
 
 
 # ======================================

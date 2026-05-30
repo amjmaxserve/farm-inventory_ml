@@ -6,6 +6,7 @@ from sqlalchemy import text
 
 from app.database.db import SessionLocal
 
+from app.config import *
 
 def wait_for_postgres():
 
@@ -41,7 +42,7 @@ def wait_for_minio():
         try:
 
             response = requests.get(
-                "http://minio:9000/minio/health/live"
+                MINIO_HEALTH_URL
             )
 
             if response.status_code == 200:
@@ -65,7 +66,7 @@ def wait_for_mlflow():
         try:
 
             response = requests.get(
-                "http://mlflow:5000"
+                MLFLOW_HEALTH_URL
             )
 
             print("MLflow Ready")
