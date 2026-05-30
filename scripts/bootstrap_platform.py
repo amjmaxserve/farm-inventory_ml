@@ -56,6 +56,26 @@ def wait_for_minio():
 
         time.sleep(5)
 
+def wait_for_mlflow():
+
+    print("Waiting for MLflow...")
+
+    while True:
+
+        try:
+
+            response = requests.get(
+                "http://mlflow:5000"
+            )
+
+            print("MLflow Ready")
+
+            return
+
+        except Exception:
+
+            time.sleep(5)
+
 
 def create_tables():
 
@@ -120,6 +140,8 @@ if __name__ == "__main__":
     wait_for_postgres()
 
     wait_for_minio()
+    
+    wait_for_mlflow()
 
     create_tables()
 

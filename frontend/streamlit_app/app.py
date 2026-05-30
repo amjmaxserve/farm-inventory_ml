@@ -78,7 +78,7 @@ if menu == "Dashboard":
 
     total_predictions = len(prediction_df)
 
-    low_stock_items = []
+    low_stock_items = pd.DataFrame()
 
     total_inventory_value = 0
 
