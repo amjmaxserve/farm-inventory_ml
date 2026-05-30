@@ -430,12 +430,60 @@ elif menu == "Predictions":
             }
         )
 
-        result = response.json()
+        if response.status_code == 200:
 
-        st.success(
-            f"Predicted Inventory: "
-            f"{result['predicted_inventory']}"
-        )
+            result = response.json()
+
+            st.subheader(
+                "Inventory Planning Recommendation"
+            )
+
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+
+                st.metric(
+                    "Predicted Requirement",
+                    f"{result['predicted_inventory']:.2f}"
+                )
+
+            with col2:
+
+                st.metric(
+                    "Current Stock",
+                    f"{result['current_stock']}"
+                )
+
+            with col3:
+
+                st.metric(
+                    "Recommended Purchase",
+                    f"{result['recommended_purchase']}"
+                )
+
+            if result["recommended_purchase"] > 0:
+
+                st.warning(
+                    result["stock_status"]
+                )
+
+            else:
+
+                st.success(
+                    result["stock_status"]
+                )
+
+            st.caption(
+                f"Model: {result['model']} | "
+                f"Confidence Score: "
+                f"{result['confidence_score']}"
+            )
+
+        else:
+
+            st.error(
+                "Prediction API failed"
+            )
 
     st.markdown("---")
 

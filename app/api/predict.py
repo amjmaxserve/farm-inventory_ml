@@ -9,7 +9,10 @@ from sqlalchemy.orm import Session
 
 from app.database.dependencies import get_db
 
-from app.database.models import PredictionHistory
+from app.database.models import (
+    PredictionHistory,
+    Inventory
+)
 
 from app.ml.model_loader import download_latest_model
 
@@ -86,6 +89,28 @@ def predict_inventory(
         float(prediction[0]),
         2
     )
+    
+    # ======================================
+    # CURRENT STOCK FOR CROP
+    # ======================================
+    
+    inventory_item = (db.query(Inventory).filter(
+        Inventory.crop_type == crop_type
+    ).all()
+    )
+    
+    current_stock = sum([item.quantity for item in inventory_item])
+    
+    # ======================================
+    # PURCHASE RECOMMENDATION
+    # ======================================
+    
+    recommended_purchase = max(0, round(predicted_value - current_stock), 2)
+    
+    if recommended_purchase == 0:
+        stock_status = "Sufficient stock available. No purchase needed."
+    else:
+        stock_status = f"Recommended purchase quantity: {recommended_purchase} units."
 
     # ======================================
     # SAVE PREDICTION HISTORY
@@ -129,6 +154,12 @@ def predict_inventory(
         "model": "xgboost_v1",
 
         "predicted_inventory": predicted_value,
+        
+        "current_stock": current_stock,
+        
+        "recommended_purchase": recommended_purchase,
+        
+        "stock_status": stock_status,
 
         "confidence_score": 0.95
     }
