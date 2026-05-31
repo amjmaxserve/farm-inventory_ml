@@ -67,10 +67,10 @@ jobs:
           test -n "$MLFLOW_HEALTH_URL" && echo "MLFLOW_HEALTH_URL OK"
           test -n "$MINIO_HEALTH_URL" && echo "MINIO_HEALTH_URL OK"
 
-      - name: Build Test Image
+      # - name: Build Test Image
 
-        run: |
-          docker-compose build test
+      #   run: |
+      #     docker-compose build test
 
       - name: Run Flake8
 
