@@ -18,6 +18,18 @@ DATABASE_URL = (
     f"{POSTGRES_PORT}/"
     f"{POSTGRES_DB}"
 )
+
+print("\n===== DATABASE DEBUG =====")
+print(f"POSTGRES_USER={POSTGRES_USER}")
+print(f"POSTGRES_HOST={POSTGRES_HOST}")
+print(f"POSTGRES_PORT={POSTGRES_PORT}")
+print(f"POSTGRES_DB={POSTGRES_DB}")
+print(f"DATABASE_URL={DATABASE_URL}")
+print("==========================\n")
+
+
+
+
 engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(

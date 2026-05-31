@@ -43,6 +43,30 @@ jobs:
       - name: Checkout Repository
 
         uses: actions/checkout@v4
+      
+      - name: Verify Runner
+        run: |
+          hostname
+          whoami
+          pwd
+          docker --version
+          docker-compose --version
+      
+      - name: Verify Environment Variables
+
+        run: |
+          echo "POSTGRES_USER=$[POSTGRES_USER]"
+          echo "POSTGRES_HOST=$[POSTGRES_HOST]"
+          echo "POSTGRES_PORT=$[POSTGRES_PORT]"
+          echo "POSTGRES_DB=$[POSTGRES_DB]"
+
+
+          echo "MINIO_ENDPOINT=$[MINIO_ENDPOINT]"
+          echo "MODEL_BUCKET=$[MODEL_BUCKET]"
+
+          echo "MLFLOW_TRACKING_URI=$[MLFLOW_TRACKING_URI]"
+          echo "MLFLOW_HEALTH_URL=$[MLFLOW_HEALTH_URL]"
+          echo "MINIO_HEALTH_URL=$[MINIO_HEALTH_URL]"
 
       - name: Verify Runner
 
