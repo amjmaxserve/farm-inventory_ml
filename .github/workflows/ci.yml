@@ -1,14 +1,18 @@
 name: Farm Inventory CI
 
 on:
+
   push:
+
     branches:
       - main
       - phase4-production
 
   pull_request:
+
     branches:
       - main
+
 
 jobs:
 
@@ -16,19 +20,58 @@ jobs:
 
     runs-on: self-hosted
 
+    env:
+
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+
+      MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+      MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+      MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+
+      MODEL_BUCKET: ${{ secrets.MODEL_BUCKET }}
+
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      MLFLOW_HEALTH_URL: ${{ secrets.MLFLOW_HEALTH_URL }}
+      MINIO_HEALTH_URL: ${{ secrets.MINIO_HEALTH_URL }}
+
     steps:
 
-      - name: Checkout
+      - name: Checkout Repository
+
         uses: actions/checkout@v4
 
-      - name: Verify Docker
-        run: docker --version
+      - name: Verify Runner
+
+        run: |
+          hostname
+          pwd
+          docker --version
+          docker-compose --version
+
+      - name: Verify Environment Variables
+
+        run: |
+          echo "POSTGRES_USER=$POSTGRES_USER"
+          echo "POSTGRES_HOST=$POSTGRES_HOST"
+          echo "POSTGRES_PORT=$POSTGRES_PORT"
+          echo "MINIO_ENDPOINT=$MINIO_ENDPOINT"
+          echo "MODEL_BUCKET=$MODEL_BUCKET"
 
       - name: Build Test Image
-        run: docker-compose build test
+
+        run: |
+          docker-compose build test
 
       - name: Run Flake8
-        run: docker-compose run --rm test flake8 .
+
+        run: |
+          docker-compose run --rm test flake8 .
 
       - name: Run Pytest
-        run: docker-compose run --rm test
+
+        run: |
+          docker-compose run --rm test
