@@ -3,14 +3,17 @@
 # IMPORTS
 # ======================================
 
-import os
-from datetime import datetime
-
 import importlib
+import os
 import sys
 
-# Check required third-party packages before importing them so we can
-# provide a clear error message if the environment is missing deps.
+import boto3
+from botocore.exceptions import ClientError
+from datetime import datetime
+# ==========================================
+# VERIFY REQUIRED PACKAGES
+# ==========================================
+
 required_modules = [
     "boto3",
     "pandas",
@@ -18,58 +21,116 @@ required_modules = [
     "xgboost",
     "sklearn",
 ]
+
 missing = []
-for m in required_modules:
+
+for module_name in required_modules:
+
     try:
-        importlib.import_module(m)
+
+        importlib.import_module(module_name)
+
     except Exception:
-        missing.append(m)
+
+        missing.append(module_name)
 
 if missing:
-    print("Missing required Python packages:", ", ".join(missing))
-    print("Install them with: pip install -r requirements.txt")
+
+    print(
+        "Missing required Python packages:",
+        ", ".join(missing)
+    )
+
+    print(
+        "Install them with: pip install -r requirements.txt"
+    )
+
     sys.exit(1)
 
-import boto3
+# ==========================================
+# OPTIONAL JOBLIB IMPORT
+# ==========================================
+
 try:
+
     import joblib
-    _HAS_JOBLIB = True
+
+    HAS_JOBLIB = True
+
 except Exception:
+
     import pickle
-    _HAS_JOBLIB = False
+
+    HAS_JOBLIB = False
+
 
 def save_model(obj, path):
-    """Save model to `path` using joblib if available, otherwise pickle."""
-    if _HAS_JOBLIB:
-        joblib.dump(obj, path)
+    """
+    Save model using joblib if available,
+    otherwise use pickle.
+    """
+
+    if HAS_JOBLIB:
+
+        joblib.dump(
+            obj,
+            path
+        )
+
     else:
-        with open(path, "wb") as f:
-            pickle.dump(obj, f)
-import pandas as pd
+
+        with open(path, "wb") as file:
+
+            pickle.dump(
+                obj,
+                file
+            )
+
+
+# ==========================================
+# THIRD PARTY IMPORTS
+# ==========================================
+
 import mlflow
-
-
-from botocore.exceptions import ClientError
+import pandas as pd
 
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import (
     mean_absolute_error,
     mean_squared_error,
-    r2_score
+    r2_score,
 )
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
 
 from xgboost import XGBRegressor
-from app.config import *
+
+# ==========================================
+# PROJECT IMPORTS
+# ==========================================
+
+from app.config import (
+    MLFLOW_TRACKING_URI,
+    MINIO_ENDPOINT,
+    MINIO_ROOT_PASSWORD,
+    MINIO_ROOT_USER,
+    MODEL_BUCKET,
+)
+
 from app.core.logger import get_logger
+
+# ==========================================
+# LOGGER
+# ==========================================
 
 logger = get_logger("Retraining")
 
-logger.info("Starting model retraining process...")
+logger.info(
+    "Starting model retraining process..."
+)
 
 # ======================================
 # SECTION 2
@@ -180,9 +241,7 @@ def load_dataset():
 # ======================================
 
 create_bucket_if_not_exists()
-
 create_directories()
-
 print("Environment preparation completed.")
 
 # ======================================

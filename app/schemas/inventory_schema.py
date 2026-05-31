@@ -1,6 +1,9 @@
 
 from pydantic import BaseModel
 from typing import Optional
+from pydantic import ConfigDict
+
+
 
 
 class InventoryCreate(BaseModel):
@@ -36,6 +39,4 @@ class InventoryResponse(InventoryCreate):
 
     id: int
 
-    class Config:
-
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

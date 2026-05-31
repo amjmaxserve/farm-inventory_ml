@@ -4,7 +4,7 @@ from sqlalchemy import String
 from sqlalchemy import Float
 from sqlalchemy import DateTime
 
-from datetime import datetime
+from datetime import datetime, UTC
 
 from .db import Base
 
@@ -43,8 +43,8 @@ class Inventory(Base):
     usage_per_month = Column(Float)
 
     created_at = Column(
-        DateTime,
-        default=datetime.utcnow
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC)
     )
 
 
@@ -68,8 +68,8 @@ class InventoryUsage(Base):
     usage_date = Column(DateTime)
 
     created_at = Column(
-        DateTime,
-        default=datetime.utcnow
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC)
     )
 
 
@@ -103,6 +103,6 @@ class PredictionHistory(Base):
     model_version = Column(String)
 
     created_at = Column(
-        DateTime,
-        default=datetime.utcnow
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC)
     )

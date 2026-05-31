@@ -56,8 +56,8 @@ def health_check():
     # ==============================
     try:
         if os.path.exists(
-    "trained_models/current_model.pkl"
-):
+            "trained_models/current_model.pkl"
+        ):
             model_status = "loaded"
     except Exception:
         pass

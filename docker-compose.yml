@@ -157,6 +157,28 @@ services:
 
     restart: unless-stopped
 
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: farm_test
+    command: pytest -v
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      mlflow:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+      MLFLOW_S3_ENDPOINT_URL: http://${MINIO_ENDPOINT}
+    restart: "no"
+
+
+
 volumes:
   postgres_data:
   minio_data:

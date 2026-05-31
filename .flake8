@@ -1,0 +1,19 @@
+[flake8]
+max-line-length = 88
+
+exclude =
+    .git,
+    __pycache__,
+    datasets,
+    trained_models,
+    logs
+
+extend-ignore =
+    E302,
+    E303,
+    E305,
+    E402,
+    W291,
+    W292,
+    W293,
+    W391

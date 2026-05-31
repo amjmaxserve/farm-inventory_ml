@@ -1,6 +1,11 @@
 import os
 import boto3
-from app.config import *
+from app.config import (
+    MODEL_BUCKET,
+    MINIO_ENDPOINT,
+    MINIO_ROOT_USER,
+    MINIO_ROOT_PASSWORD
+)
 from app.core.logger import get_logger
 
 logger = get_logger("fastapi")

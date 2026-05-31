@@ -6,7 +6,10 @@ from sqlalchemy import text
 
 from app.database.db import SessionLocal
 
-from app.config import *
+from app.config import (
+    MINIO_HEALTH_URL,
+    MLFLOW_HEALTH_URL
+)
 
 from app.core.logger import get_logger
 
@@ -66,21 +69,22 @@ def wait_for_mlflow():
     print("Waiting for MLflow...")
 
     while True:
-
         try:
-
+            
             response = requests.get(
                 MLFLOW_HEALTH_URL
             )
 
-            print("MLflow Ready")
+            if response.status_code == 200:
 
-            return
+                print("MLflow Ready")
 
+                return
         except Exception:
-
-            time.sleep(5)
-
+            
+            pass
+        
+        time.sleep(5)
 
 def create_tables():
 
