@@ -19,13 +19,13 @@ DATABASE_URL = (
     f"{POSTGRES_DB}"
 )
 
-print("\n===== DATABASE DEBUG =====")
-print(f"POSTGRES_USER={POSTGRES_USER}")
-print(f"POSTGRES_HOST={POSTGRES_HOST}")
-print(f"POSTGRES_PORT={POSTGRES_PORT}")
-print(f"POSTGRES_DB={POSTGRES_DB}")
-print(f"DATABASE_URL={DATABASE_URL}")
-print("==========================\n")
+print("===== DATABASE DEBUG =====")
+print("POSTGRES_USER =", repr(POSTGRES_USER))
+print("POSTGRES_HOST =", repr(POSTGRES_HOST))
+print("POSTGRES_PORT =", repr(POSTGRES_PORT))
+print("POSTGRES_DB =", repr(POSTGRES_DB))
+print("DATABASE_URL =", repr(DATABASE_URL))
+print("==========================")
 
 
 
