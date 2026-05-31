@@ -5,25 +5,30 @@ on:
     branches:
       - main
       - phase4-production
+
   pull_request:
     branches:
       - main
-      - phase4-production
 
 jobs:
+
   test:
-    runs-on: ubuntu-latest
+
+    runs-on: self-hosted
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-    - name: Build test Container 
-      run: 
-        docker-compose build test
-    name: Run Flake8
-      run: 
-        docker-compose run --rm test flake8 .
-    name: Run Pytest
-      run:
-        docker-compose run --rm test pytest
-    
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify Docker
+        run: docker --version
+
+      - name: Build Test Image
+        run: docker-compose build test
+
+      - name: Run Flake8
+        run: docker-compose run --rm test flake8 .
+
+      - name: Run Pytest
+        run: docker-compose run --rm test
