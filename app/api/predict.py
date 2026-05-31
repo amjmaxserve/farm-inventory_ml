@@ -16,6 +16,7 @@ from app.database.models import (
 
 from app.ml.model_loader import download_latest_model
 
+router = APIRouter()
 
 # ==========================================
 # LOAD MODEL FROM MINIO
@@ -24,16 +25,18 @@ from app.ml.model_loader import download_latest_model
 model = None
 
 def get_model():
-    
+
     global model
 
     if model is None:
-        model = download_latest_model()
+
+        model_path = download_latest_model()
+
+        model = joblib.load(
+            model_path
+        )
 
     return model
-router = APIRouter()
-
-
 
 # ==========================================
 # PREDICTION API
