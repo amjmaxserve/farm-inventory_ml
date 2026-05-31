@@ -19,16 +19,6 @@ DATABASE_URL = (
     f"{POSTGRES_DB}"
 )
 
-print("===== DATABASE DEBUG =====")
-print("POSTGRES_USER =", repr(POSTGRES_USER))
-print("POSTGRES_HOST =", repr(POSTGRES_HOST))
-print("POSTGRES_PORT =", repr(POSTGRES_PORT))
-print("POSTGRES_DB =", repr(POSTGRES_DB))
-print("DATABASE_URL =", repr(DATABASE_URL))
-print("==========================")
-
-
-
 
 engine = create_engine(DATABASE_URL)
 
