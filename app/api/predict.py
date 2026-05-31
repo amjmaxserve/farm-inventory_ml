@@ -21,10 +21,16 @@ from app.ml.model_loader import download_latest_model
 # LOAD MODEL FROM MINIO
 # ==========================================
 
-MODEL_PATH = download_latest_model()
+model = None
 
-model = joblib.load(MODEL_PATH)
+def get_model():
+    
+    global model
 
+    if model is None:
+        model = download_latest_model()
+
+    return model
 router = APIRouter()
 
 
@@ -82,11 +88,11 @@ def predict_inventory(
     # MODEL PREDICTION
     # ======================================
 
-   
-    prediction = model.predict(input_df)
+    loaded_model = get_model()
+    prediction = loaded_model.predict(input_df)[0]
 
     predicted_value = round(
-        float(prediction[0]),
+        float(prediction),
         2
     )
     
