@@ -63,3 +63,12 @@ MLFLOW_HEALTH_URL = os.getenv(
     "MLFLOW_HEALTH_URL",
     "http://mlflow:5000"
 )
+
+JWT_SECRET_KEY = os.getenv(
+    "JWT_SECRET_KEY",
+    "change-me-in-production"
+)
+
+JWT_ALGORITHM = "HS256"
+
+JWT_EXPIRE_MINUTES = 60

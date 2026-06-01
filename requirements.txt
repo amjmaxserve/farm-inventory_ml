@@ -26,3 +26,7 @@ black
 flake8
 isort
 pre-commit
+
+bcrypt==5.0.0
+python-jose[cryptography]
+
