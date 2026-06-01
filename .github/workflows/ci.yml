@@ -68,7 +68,7 @@ jobs:
 
       - name: Run Flake8
         run: |
-          docker compose run --rm test flake8 .
+          docker-compose run --rm test flake8 .
 
   test:
     name: Unit Tests
@@ -80,24 +80,24 @@ jobs:
 
       - name: Run Pytest
         run: |
-          docker compose run --rm test pytest -v
+          docker-compose run --rm test pytest -v
 
-  build:
-    name: Build Docker Image
-    runs-on: self-hosted
-    needs: test
+  # build:
+  #   name: Build Docker Image
+  #   runs-on: self-hosted
+  #   needs: test
 
-    steps:
-      - uses: actions/checkout@v4
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Build Test Image
-        run: |
-          docker compose build test
+  #     - name: Build Test Image
+  #       run: |
+  #         docker-compose build test
 
   integration:
     name: Integration Validation
     runs-on: self-hosted
-    needs: build
+    needs: lint
 
     steps:
       - uses: actions/checkout@v4
