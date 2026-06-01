@@ -1,83 +1,114 @@
 name: Farm Inventory CI
 
 on:
-
   push:
-
     branches:
       - main
       - phase4-production
 
   pull_request:
-
     branches:
       - main
 
+env:
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+  POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+  POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+
+  MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+  MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+  MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+
+  MODEL_BUCKET: ${{ secrets.MODEL_BUCKET }}
+
+  MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+  MLFLOW_HEALTH_URL: ${{ secrets.MLFLOW_HEALTH_URL }}
+  MINIO_HEALTH_URL: ${{ secrets.MINIO_HEALTH_URL }}
+
 jobs:
 
-  test:
-
+  verify:
+    name: Verify Environment
     runs-on: self-hosted
 
-    env:
-
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-      POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-
-      MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
-      MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
-      MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-
-      MODEL_BUCKET: ${{ secrets.MODEL_BUCKET }}
-
-      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-      MLFLOW_HEALTH_URL: ${{ secrets.MLFLOW_HEALTH_URL }}
-      MINIO_HEALTH_URL: ${{ secrets.MINIO_HEALTH_URL }}
-
     steps:
-
-      - name: Checkout Repository
-
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Verify Runner
-
         run: |
           echo "Hostname: $(hostname)"
           echo "User: $(whoami)"
           echo "Working Directory: $(pwd)"
           docker --version
-          docker-compose --version
+          docker compose version
 
       - name: Verify Environment Variables
-
         run: |
-          test -n "$POSTGRES_USER" && echo "POSTGRES_USER OK"
-          test -n "$POSTGRES_HOST" && echo "POSTGRES_HOST OK"
-          test -n "$POSTGRES_PORT" && echo "POSTGRES_PORT OK"
-          test -n "$POSTGRES_DB" && echo "POSTGRES_DB OK"
+          test -n "$POSTGRES_USER"
+          test -n "$POSTGRES_HOST"
+          test -n "$POSTGRES_PORT"
+          test -n "$POSTGRES_DB"
 
-          test -n "$MINIO_ENDPOINT" && echo "MINIO_ENDPOINT OK"
-          test -n "$MODEL_BUCKET" && echo "MODEL_BUCKET OK"
+          test -n "$MINIO_ENDPOINT"
+          test -n "$MODEL_BUCKET"
 
-          test -n "$MLFLOW_TRACKING_URI" && echo "MLFLOW_TRACKING_URI OK"
-          test -n "$MLFLOW_HEALTH_URL" && echo "MLFLOW_HEALTH_URL OK"
-          test -n "$MINIO_HEALTH_URL" && echo "MINIO_HEALTH_URL OK"
+          test -n "$MLFLOW_TRACKING_URI"
+          test -n "$MLFLOW_HEALTH_URL"
+          test -n "$MINIO_HEALTH_URL"
 
-      # - name: Build Test Image
+  lint:
+    name: Lint Code
+    runs-on: self-hosted
+    needs: verify
 
-      #   run: |
-      #     docker-compose build test
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Run Flake8
-
         run: |
-          docker-compose run --rm test flake8 .
+          docker compose run --rm test flake8 .
+
+  test:
+    name: Unit Tests
+    runs-on: self-hosted
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Run Pytest
-
         run: |
-          docker-compose run --rm test
+          docker compose run --rm test pytest -v
+
+  build:
+    name: Build Docker Image
+    runs-on: self-hosted
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Test Image
+        run: |
+          docker compose build test
+
+  integration:
+    name: Integration Validation
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify MLflow
+        run: |
+          curl -f $MLFLOW_HEALTH_URL
+
+      - name: Verify MinIO
+        run: |
+          curl -f $MINIO_HEALTH_URL
+
+      - name: Integration Complete
+        run: echo "Integration Validation Successful"
