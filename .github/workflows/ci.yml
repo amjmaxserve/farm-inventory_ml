@@ -115,7 +115,7 @@ jobs:
 
   pytest:
     runs-on: self-hosted
-    needs: run-flaske8
+    needs: Build-test-image
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

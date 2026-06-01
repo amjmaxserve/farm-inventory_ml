@@ -1,8 +1,3 @@
-from tests.auth_helper import (
-    get_admin_token
-)
-
-
 def test_inventory_list(
     client,
     auth_headers
@@ -15,3 +10,7 @@ def test_inventory_list(
 
     assert response.status_code == 200
 
+    assert isinstance(
+        response.json(),
+        list
+    )

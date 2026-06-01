@@ -8,7 +8,6 @@ from app.database.dependencies import get_db
 from app.database.models import User
 
 from app.schemas.user_schema import (
-    UserLogin,
     TokenResponse,
     UserResponse
 )
@@ -82,7 +81,6 @@ def login(
     "/auth/me",
     response_model=UserResponse
 )
-
 def get_me(
 
     current_user: User = Depends(
