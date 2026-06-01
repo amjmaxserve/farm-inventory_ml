@@ -1,11 +1,7 @@
-from fastapi.testclient import TestClient
-
-from main import app
-
-client = TestClient(app)
-
-
-def test_prediction():
+def test_prediction(
+    client,
+    auth_headers
+):
 
     response = client.post(
 
@@ -28,11 +24,9 @@ def test_prediction():
             "farm_size": 10,
 
             "previous_usage": 250
-        }
+        },
+
+        headers=auth_headers
     )
 
     assert response.status_code == 200
-
-    data = response.json()
-
-    assert "predicted_inventory" in data

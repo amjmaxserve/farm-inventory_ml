@@ -164,6 +164,9 @@ services:
     container_name: farm_test
     command: pytest -v
 
+    volumes:
+      - .:/app
+
     depends_on:
       postgres:
         condition: service_healthy

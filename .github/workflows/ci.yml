@@ -82,12 +82,43 @@ jobs:
       
       - name: Run flake8
         run: |
-          docker-compose run --rf test flake8 .
+          docker-compose run --rm test flake8 .
+
   
+  verify-Admin-User:
+    runs-on: self-hosted
+    needs: run-flaske8
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Verify Admin User
+        run: |
+          docker-compose run --rm test python -c "
+          from app.database.db import SessionLocal
+          from app.database.models import User
+          db = SessionLocal()
+          user = db.query(User).filter(User.is_admin == True).first()
+          
+          print('Admin user exists: ', user is not None)"
+  
+  Build-test-image:
+    runs-on: self-hosted
+    needs: verify-Admin-User
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build Test Image
+        run: |
+          docker-compose build test
+
   pytest:
     runs-on: self-hosted
     needs: run-flaske8
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Run pytest
         run: |
           docker-compose run --rm test
