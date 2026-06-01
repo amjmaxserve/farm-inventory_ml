@@ -39,11 +39,13 @@ jobs:
       
       - name: Verify Runner
         run: |
-        echo "Hostname: $(hostname)"
-        echo "User: $(whoami)"
-        echo "Working Directory: $(pwd)"
-        docker --version
-        docker-compose --version
+          echo "Hostname: $(hostname)"
+          echo "User: $(whoami)"
+          echo "Working Directory: $(pwd)"
+          echo "Docker version:"
+          docker --version
+          echo "Docker Compose version:"
+          docker-compose --version
 
   
   verify-environment-variables:
@@ -57,7 +59,8 @@ jobs:
       
       - name: Verify Environment Variables
         run: |
-          test -n "$POSTGRES_USER" && echo ""POSTGRES_USER ok"
+          echo "Verifying Environment Variables..."
+          test -n "$POSTGRES_USER" && echo "POSTGRES_USER ok"
           test -n "$POSTGRES_PASSWORD" && echo "POSTGRES_PASSWORD ok"
           test -n "$POSTGRES_DB" && echo "POSTGRES_DB ok"
           test -n "$POSTGRES_HOST" && echo "POSTGRES_HOST ok"
