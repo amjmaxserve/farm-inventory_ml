@@ -97,10 +97,19 @@ jobs:
           docker-compose run --rm test python -c "
           from app.database.db import SessionLocal
           from app.database.models import User
+
           db = SessionLocal()
-          user = db.query(User).filter(User.is_admin == True).first()
-          
-          print('Admin user exists: ', user is not None)"
+
+          user = (
+          db.query(User)
+          .filter(User.role == 'ADMIN')
+          .first()
+          )
+
+          assert user is not None
+
+          print(f'Admin user found: {user.username}')
+          "
   
   Build-test-image:
     runs-on: self-hosted
