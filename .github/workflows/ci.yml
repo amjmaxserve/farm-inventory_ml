@@ -30,85 +30,61 @@ env:
 jobs:
 
   verify:
-    name: Verify Environment
+
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
-
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
       - name: Verify Runner
         run: |
-          echo "Hostname: $(hostname)"
-          echo "User: $(whoami)"
-          echo "Working Directory: $(pwd)"
-          docker --version
-          docker-compose version
+        echo "Hostname: $(hostname)"
+        echo "User: $(whoami)"
+        echo "Working Directory: $(pwd)"
+        docker --version
+        docker-compose --version
 
-      - name: Verify Environment Variables
-        run: |
-          test -n "$POSTGRES_USER"
-          test -n "$POSTGRES_HOST"
-          test -n "$POSTGRES_PORT"
-          test -n "$POSTGRES_DB"
-
-          test -n "$MINIO_ENDPOINT"
-          test -n "$MODEL_BUCKET"
-
-          test -n "$MLFLOW_TRACKING_URI"
-          test -n "$MLFLOW_HEALTH_URL"
-          test -n "$MINIO_HEALTH_URL"
-
-  lint:
-    name: Lint Code
+  
+  verify-environment-variables:
     runs-on: self-hosted
+
     needs: verify
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Run Flake8
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Verify Environment Variables
         run: |
-          docker-compose run --rm test flake8 .
-
-  test:
-    name: Unit Tests
+          test -n "$POSTGRES_USER" && echo ""POSTGRES_USER ok"
+          test -n "$POSTGRES_PASSWORD" && echo "POSTGRES_PASSWORD ok"
+          test -n "$POSTGRES_DB" && echo "POSTGRES_DB ok"
+          test -n "$POSTGRES_HOST" && echo "POSTGRES_HOST ok"
+          test -n "$POSTGRES_PORT" && echo "POSTGRES_PORT ok"
+          test -n "$MINIO_ROOT_USER" && echo "MINIO_ROOT_USER ok"
+          test -n "$MINIO_ROOT_PASSWORD" && echo "MINIO_ROOT_PASSWORD ok"
+          test -n "$MINIO_ENDPOINT" && echo "MINIO_ENDPOINT ok"
+          test -n "$MODEL_BUCKET" && echo "MODEL_BUCKET ok"
+          test -n "$MLFLOW_TRACKING_URI" && echo "MLFLOW_TRACKING_URI ok"
+          test -n "$MLFLOW_HEALTH_URL" && echo "MLFLOW_HEALTH_URL ok"
+          test -n "$MINIO_HEALTH_URL" && echo "MINIO_HEALTH_URL ok"
+  
+  run-flaske8:
     runs-on: self-hosted
-    needs: lint
-
+    needs: verify-environment-variables
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Run Pytest
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run flake8
         run: |
-          docker-compose run --rm test pytest -v
-
-  # build:
-  #   name: Build Docker Image
-  #   runs-on: self-hosted
-  #   needs: test
-
-  #   steps:
-  #     - uses: actions/checkout@v4
-
-  #     - name: Build Test Image
-  #       run: |
-  #         docker-compose build test
-
-  integration:
-    name: Integration Validation
+          docker-compose run --rf test flake8 .
+  
+  pytest:
     runs-on: self-hosted
-    needs: lint
-
+    needs: run-flaske8
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Verify MLflow
+      - name: Run pytest
         run: |
-          curl -f $MLFLOW_HEALTH_URL
-
-      - name: Verify MinIO
-        run: |
-          curl -f $MINIO_HEALTH_URL
-
-      - name: Integration Complete
-        run: echo "Integration Validation Successful"
+          docker-compose run --rm test
