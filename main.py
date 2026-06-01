@@ -4,6 +4,8 @@ from app.api.predict import router as predict_router
 from app.api.inventory import router as inventory_router
 from app.api.prediction_history import router as prediction_history_router
 from app.core.logger import get_logger
+from app.api.auth import router as auth_router
+from app.api.users import router as users_router
 import time
 
 
@@ -46,6 +48,18 @@ app.include_router(
     inventory_router,
     prefix="/api",
     tags=["Inventory"]
+)
+
+app.include_router(
+    auth_router,
+    prefix="/api",
+    tags=["Authentication"]
+)
+
+app.include_router(
+    users_router,
+    prefix="/api",
+    tags=["Users"]
 )
 
 @app.get("/")

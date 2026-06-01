@@ -16,6 +16,12 @@ from app.database.models import (
 
 from app.ml.model_loader import download_latest_model
 
+from app.database.models import User
+
+from app.auth.dependencies import (
+    require_ml_access
+)
+
 router = APIRouter()
 
 # ==========================================
@@ -61,7 +67,8 @@ def predict_inventory(
 
     previous_usage: float,
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_ml_access)
 ):
 
     # ======================================

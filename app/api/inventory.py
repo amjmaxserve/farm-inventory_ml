@@ -12,6 +12,14 @@ from app.schemas.inventory_schema import (
     InventoryResponse
 )
 
+from app.database.models import User
+
+from app.auth.dependencies import (
+    get_current_user,
+    require_admin,
+    require_inventory_manager
+)
+
 router = APIRouter(
     prefix="/inventory",
     tags=["Inventory"]
@@ -21,7 +29,8 @@ router = APIRouter(
 @router.post("/", response_model=InventoryResponse)
 def create_inventory(
     inventory: InventoryCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_inventory_manager)
 ):
 
     db_inventory = Inventory(
@@ -34,7 +43,7 @@ def create_inventory(
         cost=inventory.cost,
         supplier=inventory.supplier,
         storage_location=inventory.storage_location,
-        expiration_date=inventory.expiration_date,
+        expiry_date=inventory.expiry_date,
         batch_number=inventory.batch_number,
         season=inventory.season,
         usage_per_month=inventory.usage_per_month,
@@ -52,7 +61,8 @@ def create_inventory(
 
 @router.get("/")
 def list_inventory(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     return db.query(Inventory).all()
@@ -61,7 +71,8 @@ def list_inventory(
 @router.delete("/{inventory_id}")
 def delete_inventory(
     inventory_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin)
 ):
 
     inventory = db.query(Inventory).filter(

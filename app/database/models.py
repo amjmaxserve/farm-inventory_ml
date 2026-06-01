@@ -120,7 +120,7 @@ class User(Base):
 
     hashed_password = Column(String, nullable=False)
     
-    role = Column(String, nullable=False, default="Viewer")
+    role = Column(String, nullable=False, default="VIEWER")
     
     is_active = Column(Boolean, default=True)
 
@@ -133,4 +133,39 @@ class User(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC)
+    )
+
+
+class AuditLog(Base):
+
+    __tablename__ = "audit_logs"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    username = Column(
+        String,
+        nullable=False
+    )
+
+    action = Column(
+        String,
+        nullable=False
+    )
+
+    resource = Column(
+        String,
+        nullable=False
+    )
+
+    details = Column(
+        String
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC)
     )
