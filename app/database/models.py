@@ -169,3 +169,48 @@ class AuditLog(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC)
     )
+
+
+
+class ModelRegistry(Base):
+
+    __tablename__ = "model_registry"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    model_name = Column(
+        String,
+        nullable=False
+    )
+
+    version = Column(
+        String,
+        nullable=False,
+        unique=True
+    )
+
+    mlflow_run_id = Column(
+        String
+    )
+
+    artifact_path = Column(
+        String
+    )
+
+    accuracy = Column(
+        Float
+    )
+
+    status = Column(
+        String,
+        default="STAGING"
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC)
+    )
