@@ -105,7 +105,7 @@ jobs:
               print(u.username, u.role)
           admin = db.query(User).filter(User.role == 'ADMIN').first()
           print('ADMIN:', admin)
-          asssert admin is not None
+          assert admin is not None
           "
 
   
