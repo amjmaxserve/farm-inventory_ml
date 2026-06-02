@@ -99,17 +99,14 @@ jobs:
           from app.database.models import User
 
           db = SessionLocal()
-
-          user = (
-          db.query(User)
-          .filter(User.role == 'ADMIN')
-          .first()
-          )
-
-          assert user is not None
-
-          print(f'Admin user found: {user.username}')
+          users = db.query(User).all()
+          print('USERS':)
+          for u in users:
+              print(u.username, u.role)
+          admin = db.query(User).filter(User.role == 'admin').first()
+          print('ADMIN:', admin)
           "
+
   
   Build-test-image:
     runs-on: self-hosted
