@@ -8,6 +8,8 @@ from app.api.auth import router as auth_router
 from app.api.users import router as users_router
 import time
 
+from app.api.model_registry import router as model_registry_router
+
 
 logger = get_logger("fastapi")
 app = FastAPI()
@@ -61,6 +63,12 @@ app.include_router(
     prefix="/api",
     tags=["Users"]
 )
+
+app.include_router(
+    model_registry_router,
+    prefix="/api"
+)
+
 
 @app.get("/")
 def home():

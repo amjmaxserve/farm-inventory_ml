@@ -119,6 +119,7 @@ services:
     container_name: farm_fastapi
     volumes:
       - ./logs:/app/logs
+      - .:/app
     
     depends_on:
       bootstrap:
