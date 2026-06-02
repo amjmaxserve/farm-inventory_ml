@@ -100,11 +100,12 @@ jobs:
 
           db = SessionLocal()
           users = db.query(User).all()
-          print('USERS':)
+          print('USERS:')
           for u in users:
               print(u.username, u.role)
-          admin = db.query(User).filter(User.role == 'admin').first()
+          admin = db.query(User).filter(User.role == 'ADMIN').first()
           print('ADMIN:', admin)
+          asssert admin is not None
           "
 
   
